@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Abfahrtsmonitor+ starten
+Comment=Abfahrten, Wetter und Bewegungsmelder gemeinsam starten
+Exec=/home/YOUR_PI_USER/rsag-dashboard/deploy/start-dashboard.sh
+Icon=weather-clear
+Terminal=false
+StartupNotify=true

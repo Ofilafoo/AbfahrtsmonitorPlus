@@ -1,0 +1,148 @@
+* { font-family: Cantarell, sans-serif; }
+window, .root { background: #eaf1f7; color: #1c3146; }
+.header { background: #07528c; min-height: 98px; padding: 0 32px; }
+.brand { color: #ffffff; font-size: 43px; font-weight: 800; letter-spacing: 1px; }
+.clock { color: #ffffff; font-size: 39px; font-weight: 700; }
+.health-status { border-radius: 10px; padding: 8px 12px; margin-top: 20px; margin-bottom: 20px; color: #ffffff; font-size: 20px; font-weight: 700; }
+.health-good { background: rgba(255, 255, 255, .13); }
+.health-warn { background: #ffe9b2; color: #704600; }
+.health-hot { background: #ffd9dc; color: #a3162c; }
+.close-button { background: #ffffff; color: #064b84; border-radius: 12px; padding: 10px 18px; margin-top: 18px; margin-bottom: 18px; font-size: 22px; font-weight: 800; }
+.warning-bar { background: #bf2340; min-height: 62px; padding: 0 30px; }
+.warning-text { color: #ffffff; font-size: 31px; font-weight: 800; }
+.body { padding: 22px 24px; }
+.card { background: #ffffff; border: 1px solid #dce7f0; border-radius: 25px; padding: 24px; box-shadow: 0 5px 18px rgba(19, 55, 85, .12); }
+.card-title { color: #064b84; font-weight: 800; }
+.primary-title { font-size: 38px; }
+.primary-card { padding: 14px 18px; }
+.primary-card .large-row { min-height: 50px; }
+.primary-card .line-pill { font-size: 28px; padding: 2px 1px; margin-top: 2px; margin-bottom: 2px; border-radius: 9px; }
+.primary-card .large-destination { font-size: 25px; }
+.primary-card .route-detail { font-size: 17px; }
+.primary-card .large-row .departure-time { font-size: 27px; }
+.primary-card .platform, .primary-card .delay { font-size: 16px; }
+.secondary-title { font-size: 27px; }
+.secondary-card { padding: 10px; }
+.secondary-card .mini-row { min-height: 39px; }
+.secondary-card .secondary-title { font-size: 24px; }
+.secondary-card .mini-destination { font-size: 19px; }
+.secondary-card .mini-row .departure-time { font-size: 20px; }
+.weather-title { font-size: 37px; }
+.weather-card { padding: 18px; }
+.weather-advice { border-radius: 13px; padding: 7px 11px; font-size: 22px; font-weight: 800; }
+.comparison-warmer { background: #fff0df; color: #9b450c; }
+.comparison-cooler { background: #e8f3ff; color: #07528c; }
+.comparison-same { background: #eaf6ee; color: #1c754b; }
+.advice-rain { background: #fff0ee; color: #ad3041; }
+.advice-maybe { background: #fff5db; color: #906700; }
+.page-number { color: #738ba0; font-size: 23px; }
+.departure-row { border-bottom: 1px solid #e3ebf2; }
+.large-row { min-height: 72px; }
+.mini-row { min-height: 44px; }
+.line-pill { color: #ffffff; border-radius: 12px; padding: 6px 2px; margin-top: 5px; margin-bottom: 5px; font-weight: 800; }
+.tram-pill { background: #c6283c; }
+.bus-pill { background: #0764a7; }
+.large-row .line-pill { font-size: 34px; }
+.mini-row .line-pill { font-size: 24px; padding-top: 2px; padding-bottom: 2px; margin-top: 2px; margin-bottom: 2px; }
+.destination { color: #1b3042; font-weight: 700; }
+.large-destination { font-size: 29px; }
+.mini-destination { font-size: 21px; }
+.mini-row .route-detail { font-size: 18px; }
+.route-detail { font-size: 20px; }
+.via-detail { color: #698197; }
+.alert-detail { color: #b7273e; font-weight: 700; }
+.occupancy { font-size: 20px; }
+.occupancy-low { color: #188b53; }
+.occupancy-mid { color: #a66a00; }
+.occupancy-high { color: #bc3043; }
+.departure-time { color: #064b84; font-weight: 800; }
+.large-row .departure-time { font-size: 31px; }
+.mini-row .departure-time { font-size: 23px; }
+.mini-delay { color: #c4243a; font-size: 16px; font-weight: 700; }
+.mini-alert { color: #c4243a; font-size: 22px; font-weight: 800; }
+.departure-time.cancelled { color: #c4243a; }
+.delay { color: #c4243a; font-size: 20px; font-weight: 700; }
+.platform { color: #698197; font-size: 18px; }
+.empty { color: #8195a8; font-size: 27px; }
+.temperature { color: #063f73; font-size: 74px; font-weight: 800; }
+.feels { color: #4a6279; font-size: 28px; }
+.condition { color: #1a3c5a; font-size: 30px; font-weight: 600; }
+.wind { color: #496982; font-size: 23px; font-weight: 600; }
+.outlook-tile { background: #edf5fb; border-radius: 17px; padding: 6px 10px; }
+.outlook-heading { color: #4d6881; font-size: 18px; font-weight: 700; }
+.outlook-value { color: #113d66; font-size: 25px; font-weight: 800; }
+.outlook-rain { color: #476880; font-size: 18px; }
+.radar-title, .radar-status, .radar-credit { background: rgba(255, 255, 255, .88); border-radius: 7px; padding: 4px 7px; color: #07528c; }
+.radar-title { font-size: 17px; font-weight: 800; }
+.radar-status { font-size: 16px; font-weight: 700; }
+.radar-status.radar-stale { background: #bf2340; color: #ffffff; }
+.radar-credit { font-size: 14px; }
+.radar-clear { background: rgba(255, 255, 255, .88); border-radius: 7px; padding: 4px 7px; color: #07528c; font-size: 16px; font-weight: 700; }
+.wind-overlay { background: transparent; }
+.wind-scale { color: #365a78; font-size: 19px; font-weight: 700; }
+.update-interval { color: #647990; font-size: 16px; }
+.ticker { background: #073f70; min-height: 74px; padding: 0 30px; }
+.ticker-brand { color: #ffffff; font-size: 29px; font-weight: 800; }
+.ticker-text { color: #ffffff; font-size: 28px; }
+.sensor-status { border-radius: 9px; padding: 5px 9px; margin-top: 13px; margin-bottom: 13px; font-size: 17px; font-weight: 800; }
+.sensor-active { background: #dff5e8; color: #17683e; }
+.sensor-inactive { background: #fff0df; color: #9b450c; }
+
+.compact-screen .header { min-height: 62px; padding: 0 22px; }
+.compact-screen .brand { font-size: 29px; }
+.compact-screen .clock { font-size: 27px; }
+.compact-screen .health-status { padding: 5px 7px; margin-top: 10px; margin-bottom: 10px; font-size: 13px; }
+.compact-screen .close-button { padding: 5px 9px; margin-top: 8px; margin-bottom: 8px; font-size: 16px; }
+.compact-screen .warning-bar { min-height: 42px; }
+.compact-screen .warning-text { font-size: 21px; }
+.compact-screen .body { padding: 10px 14px; }
+.compact-screen .card { border-radius: 18px; padding: 12px; }
+.compact-screen .weather-card { padding: 10px; }
+.compact-screen .secondary-card { padding: 9px; }
+.compact-screen .primary-card { padding: 9px; }
+.compact-screen .primary-card .large-row { min-height: 43px; }
+.compact-screen .primary-card .large-row .line-pill { font-size: 23px; }
+.compact-screen .primary-card .large-destination { font-size: 19px; }
+.compact-screen .primary-card .route-detail { font-size: 14px; }
+.compact-screen .primary-card .large-row .departure-time { font-size: 21px; }
+.compact-screen .primary-card .platform, .compact-screen .primary-card .delay { font-size: 13px; }
+.compact-screen .secondary-card .mini-row { min-height: 31px; }
+.compact-screen .secondary-card .secondary-title { font-size: 18px; }
+.compact-screen .secondary-card .mini-destination { font-size: 15px; }
+.compact-screen .secondary-card .mini-row .departure-time { font-size: 16px; }
+.compact-screen .primary-title { font-size: 29px; }
+.compact-screen .secondary-title { font-size: 20px; }
+.compact-screen .weather-title { font-size: 27px; }
+.compact-screen .weather-advice { padding: 4px 7px; font-size: 16px; }
+.compact-screen .page-number { font-size: 18px; }
+.compact-screen .large-row { min-height: 57px; }
+.compact-screen .large-row .line-pill { font-size: 26px; }
+.compact-screen .large-destination { font-size: 22px; }
+.compact-screen .large-row .departure-time { font-size: 24px; }
+.compact-screen .route-detail { font-size: 16px; }
+.compact-screen .platform, .compact-screen .delay { font-size: 15px; }
+.compact-screen .mini-row { min-height: 36px; }
+.compact-screen .mini-row .line-pill { font-size: 18px; }
+.compact-screen .mini-row .departure-time { font-size: 16px; }
+.compact-screen .mini-destination { font-size: 16px; }
+.compact-screen .mini-delay { font-size: 13px; }
+.compact-screen .mini-alert { font-size: 17px; }
+.compact-screen .mini-row .route-detail { font-size: 14px; }
+.compact-screen .temperature { font-size: 54px; }
+.compact-screen .feels { font-size: 19px; }
+.compact-screen .condition { font-size: 21px; }
+.compact-screen .wind { font-size: 17px; }
+.compact-screen .outlook-tile { padding: 5px 8px; }
+.compact-screen .outlook-heading { font-size: 15px; }
+.compact-screen .outlook-value { font-size: 20px; }
+.compact-screen .outlook-rain { font-size: 16px; }
+.compact-screen .radar-title { font-size: 12px; padding: 3px 5px; }
+.compact-screen .radar-status { font-size: 11px; padding: 3px 5px; }
+.compact-screen .radar-credit { font-size: 10px; padding: 3px 5px; }
+.compact-screen .radar-clear { font-size: 11px; padding: 3px 5px; }
+.compact-screen .wind-scale { font-size: 12px; }
+.compact-screen .update-interval { font-size: 11px; }
+.compact-screen .ticker { min-height: 45px; padding: 0 20px; }
+.compact-screen .ticker-brand { font-size: 20px; }
+.compact-screen .ticker-text { font-size: 19px; }
+.compact-screen .sensor-status { padding: 3px 6px; margin-top: 6px; margin-bottom: 6px; font-size: 12px; }

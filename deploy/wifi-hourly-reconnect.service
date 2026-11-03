@@ -1,0 +1,10 @@
+[Unit]
+Description=Check Wi-Fi hourly without disconnecting an active link
+Wants=NetworkManager.service
+After=NetworkManager.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/rsag-wifi.env
+ExecStart=/usr/local/sbin/wifi-hourly-check
+TimeoutStartSec=120

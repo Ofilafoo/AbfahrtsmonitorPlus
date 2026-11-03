@@ -1,0 +1,16 @@
+[Unit]
+Description=Send Raspberry Pi status in the morning
+
+[Timer]
+OnCalendar=*-*-* 08:00:00
+OnCalendar=*-*-* 08:15:00
+OnCalendar=*-*-* 08:30:00
+OnCalendar=*-*-* 08:45:00
+OnCalendar=*-*-* 09:00:00
+OnCalendar=*-*-* 09:15:00
+OnCalendar=*-*-* 09:30:00
+OnCalendar=*-*-* 09:45:00
+Persistent=false
+
+[Install]
+WantedBy=timers.target

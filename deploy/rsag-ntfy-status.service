@@ -1,0 +1,13 @@
+[Unit]
+Description=Send morning Raspberry Pi status via ntfy
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=YOUR_PI_USER
+EnvironmentFile=/etc/rsag-ntfy.env
+WorkingDirectory=/home/YOUR_PI_USER/rsag-dashboard
+ExecStart=/usr/bin/python3 /home/YOUR_PI_USER/rsag-dashboard/ntfy_status.py --send
+TimeoutStartSec=30
+Nice=10
+IOSchedulingClass=idle

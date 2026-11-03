@@ -1,0 +1,7 @@
+[Unit]
+Description=Record Raspberry Pi display memory usage
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/sbin/rsag-memory-monitor
+TimeoutStartSec=20

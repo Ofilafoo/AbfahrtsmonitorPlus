@@ -1,0 +1,9 @@
+[Unit]
+Description=Record detailed Xorg and dashboard memory usage
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/sbin/rsag-memory-monitor --detail
+TimeoutStartSec=20
+Nice=10
+IOSchedulingClass=idle

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Abfahrtsmonitor+
+Comment=Abfahrten und Wetter im Vollbild
+Exec=/home/YOUR_PI_USER/rsag-dashboard/deploy/start-dashboard.sh
+Terminal=false
+X-GNOME-Autostart-enabled=true

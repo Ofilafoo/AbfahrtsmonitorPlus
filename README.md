@@ -1,1 +1,68 @@
-# AbfahrtsmonitorPlus
+# Abfahrtsmonitor+
+
+Eine browserfreie GTK-Vollbildansicht für die RSAG-Abfahrten am Doberaner Platz, Schröderplatz und Deutsche-Med-Platz sowie das Wetter in Rostock. Doberaner Platz zeigt zehn Abfahrten links oben; Schröderplatz und Deutsche-Med-Platz stehen darunter nebeneinander. Rechts füllen Wetter und Niederschlagsradar die Höhe. Aktuelle RSAG-Meldungen laufen unten als Ticker. Die alte Terminalansicht (`dashboard.py`) bleibt als Fallback erhalten.
+
+## Hardware
+
+- **Anzeige ohne Bewegungssensor:** Ein Raspberry Pi mit grafischem Desktop, Bildschirm, passendem Videokabel, Stromversorgung, Bootmedium und Internetverbindung genügt. Getestet wurde das Projekt auf einem Raspberry Pi 4 Model B mit 2 GB RAM und Raspberry Pi OS Desktop; das ist ein getestetes Setup, keine garantierte Mindestanforderung. Beim Pi 4 braucht ein HDMI-Monitor ein Micro-HDMI-auf-HDMI-Kabel und der Pi ein geeignetes 5-V-/3-A-USB-C-Netzteil. Für Wetter, Karte und Live-Abfahrten ist WLAN oder Ethernet nötig. Auf einem anderen Linux-PC lässt sich die Vorschau ohne GPIO mit `python3 dashboard_gui.py --demo` starten.
+- **Optional für das bewegungsgesteuerte Display:** Ein digitaler PIR-Bewegungsmelder, drei passende Jumper-Kabel und ein freier GPIO-Eingang. Das verwendete Sensor-Skript `~/Desktop/pir2.py` ist nicht Bestandteil dieses Repositories; der Starter `deploy/start-dashboard.sh` erwartet es an genau diesem Pfad und verwendet `gpiozero`. Im getesteten Skript ist `MotionSensor(17)` eingestellt: Sensor-`OUT` an **BCM GPIO17 / physischer Pin 11**, `GND` an einen Masse-Pin, `VCC` an die laut Datenblatt des **konkreten Sensormodells** richtige Versorgung. GPIO-Eingänge des Pi vertragen nur **3,3-V-Signale**, niemals 5 V direkt auf `OUT` legen. Bei einem anderen GPIO muss auch die Pin-Nummer im eigenen Sensor-Skript geändert werden. Das getestete Skript schaltet den Bildschirm nach 10 Sekunden ohne Bewegung aus und bei Bewegung wieder ein; es benutzt dafür `vcgencmd display_power` und ist damit Pi-spezifisch.
+
+Ohne PIR-Sensor oder eigenes `pir2.py` den Monitor direkt mit `python3 dashboard_gui.py` starten, nicht über den gekoppelten Starter. Ein Schaltplan für das unbekannte konkrete PIR-Modul ist hier bewusst nicht vorgegeben; vor dem Verdrahten Pinbelegung und Ausgangsspannung des Moduls prüfen. [GPIO-Pinbelegung und 3,3-V-Warnung](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html) · [Pi-4-Stromversorgung und HDMI](https://www.raspberrypi.com/documentation/computers/getting-started.html)
+
+## Schnellstart für Mitwirkende
+
+Auf einem Raspberry Pi mit Desktop werden Python 3, GTK 3, PyGObject und PyCairo benötigt (unter Raspberry Pi OS typischerweise `python3-gi`, `python3-gi-cairo`, `python3-cairo`, `gir1.2-gtk-3.0` und `gir1.2-pango-1.0`). Im Projektordner startet `python3 dashboard_gui.py --demo` eine Vorschau ohne Netzwerk; `python3 -m unittest discover` prüft die Parser und Hilfsfunktionen. Ohne `--demo` braucht der Monitor Internet. Für die Anzeige allein ist kein API-Key nötig. Das Sensor-Skript `pir2.py` ist **nicht** enthalten; wer keinen Bewegungsmelder hat, startet `dashboard_gui.py` direkt statt `deploy/start-dashboard.sh`.
+
+## Eigene Orte und Haltestellen
+
+| Einstellung | Stelle im Projekt | Hinweis |
+| --- | --- | --- |
+| Drei RSAG-Haltestellen | `STOPS` in `dashboard.py` | Haltestelle auf `abfahrten-rsag.de` suchen; die Zahl am Ende der URL `https://abfahrten-rsag.de/dfi/<ID>` ist ihre ID. Die Wörterbuchwerte sind die angezeigten Namen. Die drei Kachel-Slots `14`, `15`, `179` sind zusätzlich in `dashboard_gui.py` und für die Terminalansicht in `dashboard.py` fest verdrahtet. Beim Wechsel die IDs dort ebenfalls ersetzen und die Demo-/Parser-Tests anpassen. |
+| Wetterort | `WEATHER_URL` in `dashboard.py` | `latitude` und `longitude` auf den gewünschten Ort setzen; in `dashboard_gui.py` auch den Titel `WETTER · ROSTOCK` ändern. |
+| Kartenausschnitt | `MAP_CENTER_LAT`, `MAP_CENTER_LON`, `MAP_ZOOM` in `map_layer.py` | Karte, Radar und Windraster teilen sich die Projektion. Bei anderem Gebiet auch `map_boundaries.json` und die Beschriftung `NIEDERSCHLAGSRADAR · MV` in `dashboard_gui.py` prüfen; die mitgelieferten Umrisse sind für Rostock/MV. |
+| Eigener Wohnort-Punkt | `RSAG_HOME_LAT`, `RSAG_HOME_LON` als Umgebungsvariablen | Optional: ohne beide Variablen wird **kein** Punkt angezeigt. Niemals private Koordinaten in Git eintragen. |
+
+Für den Desktop-Starter können private Marker-Koordinaten in `~/.config/rsag-dashboard.env` stehen, zum Beispiel `export RSAG_HOME_LAT='DEINE_BREITE'` und `export RSAG_HOME_LON='DEINE_LÄNGE'` auf zwei Zeilen. Die Datei außerhalb des Repositories anlegen und mit `chmod 600 ~/.config/rsag-dashboard.env` schützen; `deploy/start-dashboard.sh` liest sie beim Start. Für einen direkten Start die beiden Variablen vorher im Terminal exportieren. Die Werte müssen gültige Dezimalgrad-Koordinaten sein. Ein solches File ist **nicht** im Repository enthalten.
+
+## Datenquellen und Zugangsdaten
+
+| Quelle | Verwendung | Key / Einrichtung |
+| --- | --- | --- |
+| [RSAG-Abfahrtsmonitor](https://www.rsag-online.de/fahrplan/abfahrtsmonitor/) | Abfahrten und Meldungen über `abfahrten-rsag.de`; Abruf in `dashboard.py` | Kein Key. Die Anwendung liest HTML-Seiten und interne DFI-Pfade; das ist **keine dokumentierte stabile API**. Ändert die RSAG das Format, muss der Parser angepasst werden. |
+| [Open-Meteo](https://open-meteo.com/en/docs) | Aktuelles Wetter, Ausblick und Windfeld; `dashboard.py`, `wind_field.py` | Für die hier genutzte kostenlose, nichtkommerzielle Forecast-API [kein Key nötig](https://open-meteo.com/en/terms). Für kommerzielle oder höhere Nutzung gelten andere Bedingungen. |
+| [RainViewer Weather Maps API](https://www.rainviewer.com/api.html) | Niederschlagskacheln; `radar.py` | Für persönliche/educative Nutzung kein Key und keine Registrierung; Quellenhinweis in der Anzeige beibehalten. |
+| [OpenStreetMap-Rasterkacheln](https://operations.osmfoundation.org/policies/tiles/) | Kartenhintergrund; `map_layer.py` | Kein Key. Sichtbare Quellenangabe, gültigen User-Agent und mindestens siebentägigen Cache beibehalten; keine Kacheln massenhaft vorladen. Ein anderer Kacheldienst lässt sich mit `RSAG_OSM_TILE_URL` setzen. |
+| [ntfy](https://docs.ntfy.sh/publish/) (optional) | Tägliche Pi-Statusmeldung; `ntfy_status.py` | Für `ntfy.sh` selbst keinen API-Key besorgen: eine eigene, schwer zu erratende Topic-ID wählen (z. B. mit `openssl rand -hex 20`) und als `RSAG_NTFY_URL` in `/etc/rsag-ntfy.env` eintragen (`deploy/rsag-ntfy.env.example` als Vorlage). Topics auf `ntfy.sh` sind öffentlich, wer die ID kennt, kann mitlesen. Bei einem **eigenen geschützten** ntfy-Server kann `RSAG_NTFY_TOKEN` als Bearer-Token gesetzt werden. Die echte Datei nicht committen und auf Modus 600 beschränken. |
+
+Das WLAN-Reconnect-Profil ist ebenfalls kein API-Key: `RSAG_WIFI_PROFILE` bezeichnet den lokalen NetworkManager-Verbindungsnamen. Vorlage: `deploy/rsag-wifi.env.example`, echte Werte in `/etc/rsag-wifi.env` (nicht ins Repository). Beide `/etc`-Dateien werden nur für die jeweiligen optionalen systemd-Dienste benötigt.
+
+Die Anwendung ist bewusst RSAG-/Rostock-spezifisch. Für andere Städte reicht ein Koordinatenwechsel nicht: Abfahrtsdatenquelle, Parser, Kartenumrisse und Beschriftungen müssten ebenfalls angepasst werden.
+
+## Lokal testen
+
+```bash
+python3 -m unittest -v
+/usr/bin/python3 dashboard_gui.py --demo
+/usr/bin/python3 dashboard_gui.py --demo-offline
+/usr/bin/python3 dashboard_gui.py
+```
+
+Der Knopf „BEENDEN“, `q` oder Escape beendet die helle Vollbildansicht. `--demo` zeigt zehn Beispiel-Abfahrten samt Auslastung, Verspätung, Ausfall und weiteren Hinweisen. `--demo-offline` zeigt den roten Warnbalken mit zwischengespeicherten Beispieldaten. Ein bis drei gefüllte Kreise (`●○○` bis `●●●`) zeigen die von RSAG gemeldete Auslastungsstufe. Das Wetter zeigt aktuelle und gefühlte Temperatur, Wind und Böen, einen Ausblick für etwa 3 und 6 Stunden sowie eine kurze Empfehlung für Schirm, Regenjacke, Jacke oder Mütze und Schal. Darunter liegt ein browserfreies Niederschlagsradar für Rostock mit RainViewer-Quellenangabe. Es prüft alle fünf Minuten auf ein neues Radarbild, lädt unveränderte Bilder nicht erneut und kennzeichnet Daten nach 20 Minuten oder bei Abruffehlern als nicht aktuell. Der letzte Stand bleibt bis zur nächsten erfolgreichen Aktualisierung sichtbar. Die Abfahrten werden alle 15 Sekunden, RSAG-Meldungen jede Minute und das Wetter alle 15 Minuten aktualisiert. Nach einem Fehler werden betroffene Datenquellen alle 15 Sekunden erneut versucht. GTK3 mit PyGObject und PyCairo wird benötigt.
+
+Der Radarausschnitt reicht über Mecklenburg-Vorpommern hinaus bis Hamburg und Berlin. Die OpenStreetMap-Karte mit Küste und hervorgehobener Rostocker Stadtgrenze wird nahezu in Kachel-Originalauflösung angezeigt. Das Niederschlagsbild besteht aus den tatsächlich sichtbaren RainViewer-XYZ-Kacheln; es nutzt exakt dieselbe Web-Mercator-Projektion wie die Landkarte. Nur sichtbare Kartenkacheln werden geladen und mindestens sieben Tage zwischengespeichert; Quellenangaben stehen direkt auf der Karte.
+
+Darüber liegt ein Windraster mit 70 animierten Pfeilen (10 × 7), gleichmäßig über den erweiterten Ausschnitt verteilt. Ihre Richtung und Geschwindigkeit stammen aus Open-Meteo-Modellwerten; die Punkte bewegen sich flüssig. Die 30 abgefragten Modellpunkte werden beim Start zügig in sechs Fünfergruppen geladen. Danach wird etwa alle 2½ Minuten eine Gruppe erneuert, sodass jeder Punkt weiterhin ungefähr alle 15 Minuten neue Werte erhält. Die Farben reichen von Blau bei wenig Wind über Indigo und Violett bis Lila bei starkem Wind; eine kleine Skala nennt die zugehörigen km/h-Werte. Bei anhaltenden Abruffehlern bleiben die letzten Pfeile abgeschwächt stehen und werden als alt gekennzeichnet. Die Animation pausiert, solange der Bewegungssensor den Bildschirm abgeschaltet hat. Sie läuft unabhängig vom Abruf und bedeutet nicht, dass im Sekundentakt neue Windmessungen vorliegen.
+
+Um den Pi und die Wetter-API zu entlasten, werden die 70 sichtbaren Pfeile aus 30 Modellpunkten (6 × 5) interpoliert. Eine Anfrage umfasst nur fünf Orte; pro 15 Minuten sind es sechs Anfragen. Bei vorübergehenden Serverfehlern oder Zeitüberschreitungen wird ein Windabruf einmal nach zwei Sekunden wiederholt. Fehlt beim Start eine Gruppe, wird sie bis zum ersten vollständigen Feld alle 30 Sekunden erneut versucht. Wenn der Bildschirm ausgeschaltet ist, laufen die Datenabrufe weiter, aber Ticker, Abfahrtszeilen, Karte und Statusanzeigen lösen keine neuen Zeichenvorgänge aus. Beim nächsten Einschalten erscheint sofort der neueste Datenstand. So lässt sich am Fünf-Minuten-Speicherlog prüfen, ob die Xorg-Steigung dadurch sinkt.
+
+## Für den Pi
+
+Die GTK-Version läuft auf dem Pi. Die Desktop-Dateien unter `deploy/` rufen `deploy/start-dashboard.sh` auf. Vor der Installation muss `YOUR_PI_USER` darin durch den lokalen Benutzernamen ersetzt werden. Das Startskript startet das separat bereitgestellte Bewegungsmelder-Skript `~/Desktop/pir2.py` und die Anzeige gemeinsam und verhindert Doppelstarts. `pir2.py` gehört nicht zu diesem Repository. Beim Beenden der Anzeige stoppt das Startskript den Sensor und schaltet den Bildschirm wieder ein. Im Ticker wird der Sensorstatus angezeigt. In der Kopfzeile stehen CPU-Auslastung, belegter RAM und CPU-Temperatur als kleiner Systemcheck.
+
+Der stündliche WLAN-Dienst prüft den Zustand von `wlan0`; eine bestehende Verbindung wird nicht getrennt. Bei Offline-Status aktiviert er das in `/etc/rsag-wifi.env` konfigurierte NetworkManager-Profil. Als Vorlage dient `deploy/rsag-wifi.env.example`. Die Datei mit dem echten Profilnamen gehört nicht ins Repository. Zustand, aktives Profil und Ergebnis stehen mit `journalctl -u wifi-hourly-reconnect.service -b --no-pager` im Journal.
+
+Der Speicher-Monitor protokolliert stündlich Xorg, GTK-Anzeige, Sensor, verfügbaren RAM, Swap und Bildschirmstatus in `/var/log/rsag-dashboard-memory.csv`. Er verändert weder die Anzeige noch den Speicherzustand. Der erste Messpunkt wird auch fünf Minuten nach einem Neustart erfasst. Dienst und Timer heißen `rsag-memory-monitor.service` und `rsag-memory-monitor.timer`.
+
+Für die Ursachenanalyse gibt es zusätzlich einen passiven Fünf-Minuten-Log unter `/var/log/rsag-xorg-memory.csv`. Er hält neben den bisherigen Werten anonymen Xorg-Speicher, die größte anonyme Speicherabbildung und die Zahl offener Dateideskriptoren von Xorg und Monitor fest. `rsag-xorg-memory-monitor.timer` führt nur eine kurze `/proc`-Abfrage aus; er pausiert oder startet die Anzeige nicht neu. Der bisherige Stunden-Log läuft unverändert weiter.
+
+Die morgendliche ntfy-Statusmeldung trägt den Titel „Abfahrtsmonitor+: Morgenstatus“ und wird um 08:00 Uhr Ortszeit versendet. Wenn das WLAN dann nicht verfügbar ist, versucht der Timer es bis 09:45 Uhr alle 15 Minuten erneut; nach einem Erfolg verhindert eine Tagesmarkierung doppelte Nachrichten. Die Meldung enthält Anzeige-/Sensorstatus, WLAN-Abbrüche, RAM und Xorg, CPU/Temperatur, Speicherkarte und Laufzeit, aber keine Adresse, SSID oder IP. Die HTTPS-Topic-Adresse steht nur in `/etc/rsag-ntfy.env` (Modus 600), nicht im Quellcode. Als Vorlage dient `deploy/rsag-ntfy.env.example`. In `deploy/rsag-ntfy-status.service` muss `YOUR_PI_USER` vor der Installation ersetzt werden. Dienst und Timer heißen `rsag-ntfy-status.service` und `rsag-ntfy-status.timer`; `ntfy_status.py` lässt sich ohne Versand zur Vorschau direkt ausführen.

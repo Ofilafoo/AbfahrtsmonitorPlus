@@ -1,0 +1,10 @@
+[Unit]
+Description=Record Raspberry Pi display memory usage hourly
+
+[Timer]
+OnBootSec=5min
+OnCalendar=hourly
+Persistent=true
+
+[Install]
+WantedBy=timers.target
